@@ -7,6 +7,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Route::post('/send-message', [WhatsAppController::class,'send']);
 Route::post('/send-message', [WhatsAppController::class,'send']);
 
 Route::get('/webhook', [WhatsAppController::class,'verify']);

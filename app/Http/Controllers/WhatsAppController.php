@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class WhatsAppWebhookController extends Controller
+class WhatsAppController extends Controller
 {
     public function verify(Request $request)
     {
-        $verify_token = "1400_BPSRiauH3b4t";
+        $verify_token = config('whatsapp.verify_token');
 
         $mode = $request->query('hub.mode') ?? $request->query('hub_mode');
         $token = $request->query('hub.verify_token') ?? $request->query('hub_verify_token');
@@ -25,26 +25,67 @@ class WhatsAppWebhookController extends Controller
 
     public function receive(Request $request)
     {
-        Log::info('META RECEIVE LOCAL');
+        Log::info('=== META RECEIVE ===');
         Log::info($request->all());
 
         try {
 
-            Http::timeout(30)
+            $response = Http::timeout(30)
                 ->acceptJson()
                 ->post(
                     'https://riau.web.bps.go.id/asampedas/webhook',
                     $request->all()
                 );
 
-        } catch (\Exception $e) {
+            Log::info('=== RESPONSE ASAMPEDAS ===');
+            Log::info([
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+
+        } catch (\Throwable $e) {
 
             Log::error($e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
 
         }
 
         return response()->json([
-            'success'=>true
+            'success' => true
         ]);
+    }
+
+    public function send(Request $request)
+    {
+        $request->validate([
+            'nomor' => 'required',
+            'pesan' => 'required',
+        ]);
+
+        $response = Http::withToken(config('whatsapp.token'))
+            ->post(
+                "https://graph.facebook.com/"
+                . config('whatsapp.graph_version')
+                . "/"
+                . config('whatsapp.phone_number_id')
+                . "/messages",
+                [
+                    "messaging_product" => "whatsapp",
+                    "to" => $request->nomor,
+                    "type" => "text",
+                    "text" => [
+                        "body" => $request->pesan
+                    ]
+                ]
+            );
+
+        Log::info('SEND TO META');
+        Log::info($response->json());
+
+        return response()->json($response->json(), $response->status());
     }
 }

@@ -11,5 +11,4 @@ return [
     'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v25.0'),
 
     'verify_token' => env('WHATSAPP_VERIFY_TOKEN'),
-    
 ];
