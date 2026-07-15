@@ -23,36 +23,43 @@ class WhatsAppController extends Controller
         return response("Forbidden",403);
     }
 
+    // public function receive(Request $request)
+    // {
+    //     try {
+
+    //         Log::info('=== META RECEIVE ===');
+    //         Log::info($request->all());
+
+    //         $response = Http::timeout(30)
+    //             ->acceptJson()
+    //             ->post(
+    //                 'https://riau.web.bps.go.id/asampedas/webhook',
+    //                 $request->all()
+    //             );
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'status' => $response->status(),
+    //             'body' => $response->body(),
+    //         ]);
+
+    //     } catch (\Throwable $e) {
+
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => $e->getMessage(),
+    //             'file' => $e->getFile(),
+    //             'line' => $e->getLine(),
+    //         ],500);
+
+    //     }
+    // }
+
     public function receive(Request $request)
     {
-        try {
-
-            Log::info('=== META RECEIVE ===');
-            Log::info($request->all());
-
-            $response = Http::timeout(30)
-                ->acceptJson()
-                ->post(
-                    'https://riau.web.bps.go.id/asampedas/webhook',
-                    $request->all()
-                );
-
-            return response()->json([
-                'success' => true,
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
-
-        } catch (\Throwable $e) {
-
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-            ],500);
-
-        }
+        return response()->json([
+            'success' => true
+        ]);
     }
 
     public function send(Request $request)
