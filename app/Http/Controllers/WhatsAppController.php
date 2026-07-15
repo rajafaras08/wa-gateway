@@ -29,7 +29,8 @@ class WhatsAppController extends Controller
 
         try {
 
-            $response = Http::timeout(30)
+            $response = Http::withoutVerifying()
+                ->timeout(30)
                 ->acceptJson()
                 ->post(
                     'https://riau.web.bps.go.id/asampedas/webhook',
