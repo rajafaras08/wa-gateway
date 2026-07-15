@@ -19,10 +19,11 @@ Route::get('/cek-asampedas', function () {
 
     $response = Http::withoutVerifying()
         ->timeout(30)
-        ->get('https://riau.web.bps.go.id/asampedas');
+        ->get('https://riau.web.bps.go.id/asampedas/webhook');
 
     return [
         'status' => $response->status(),
+        'body' => $response->body(),
     ];
 });
 
