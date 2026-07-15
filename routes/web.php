@@ -17,12 +17,12 @@ Route::get('/debug', function () {
 
 Route::get('/cek-asampedas', function () {
 
-    $response = Http::timeout(30)
+    $response = Http::withoutVerifying()
+        ->timeout(30)
         ->get('https://riau.web.bps.go.id/asampedas');
 
     return [
         'status' => $response->status(),
-        'body' => $response->body(),
     ];
 });
 
