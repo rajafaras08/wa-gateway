@@ -15,6 +15,17 @@ Route::get('/debug', function () {
     throw new Exception('TEST');
 });
 
+Route::get('/cek-asampedas', function () {
+
+    $response = Http::timeout(30)
+        ->get('https://riau.web.bps.go.id/asampedas');
+
+    return [
+        'status' => $response->status(),
+        'body' => $response->body(),
+    ];
+});
+
 Route::post('/send-message', [WhatsAppController::class,'send']);
 
 Route::get('/webhook', [WhatsAppController::class,'verify']);
