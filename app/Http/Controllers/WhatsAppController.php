@@ -25,10 +25,10 @@ class WhatsAppController extends Controller
 
     public function receive(Request $request)
     {
-        Log::info('=== META RECEIVE ===');
-        Log::info($request->all());
-
         try {
+
+            Log::info('=== META RECEIVE ===');
+            Log::info($request->all());
 
             $response = Http::timeout(30)
                 ->acceptJson()
@@ -37,26 +37,22 @@ class WhatsAppController extends Controller
                     $request->all()
                 );
 
-            Log::info('=== RESPONSE ASAMPEDAS ===');
-            Log::info([
+            return response()->json([
+                'success' => true,
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
 
         } catch (\Throwable $e) {
 
-            Log::error($e->getMessage());
-
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
-            ], 500);
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ],500);
 
         }
-
-        return response()->json([
-            'success' => true
-        ]);
     }
 
     public function send(Request $request)
